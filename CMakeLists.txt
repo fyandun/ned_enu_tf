@@ -127,4 +127,5 @@ target_link_libraries(ned2enu ${catkin_LIBRARIES})
 add_executable(imu_navsat src/transform_imu_navsat.cpp)
 target_link_libraries(imu_navsat ${catkin_LIBRARIES})
 
-
+add_executable(enu_fix_inertial src/enu_fix_inertial.cpp)
+target_link_libraries(enu_fix_inertial ${catkin_LIBRARIES})

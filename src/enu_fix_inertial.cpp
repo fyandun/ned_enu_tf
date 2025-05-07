@@ -17,8 +17,9 @@ void imu_Callback(const sensor_msgs::Imu::ConstPtr& imu_msg)
     geometry_msgs::Quaternion quat_msg_in, quat_msg_out;    
     quat_msg_in = imu_msg->orientation;
 
-    // tf2::Quaternion tf2_quat(quat_msg_in.x,quat_msg_in.y,quat_msg_in.z,quat_msg_in.w); 
-    
+    tf2::Quaternion tf2_quat;//(quat_msg_in.x,quat_msg_in.y,quat_msg_in.z,quat_msg_in.w); 
+    tf2::convert(quat_msg_in, tf2_quat);
+
     // // Create a rotation from NED -> ENU
     // tf2::Quaternion q_rotate;
     // q_rotate.setRPY (M_PI, 0.0, M_PI/2);
@@ -30,18 +31,34 @@ void imu_Callback(const sensor_msgs::Imu::ConstPtr& imu_msg)
 
     new_imu_msg.header = imu_msg->header;
     new_imu_msg.angular_velocity.x = imu_msg->angular_velocity.y;
-    new_imu_msg.angular_velocity.y = imu_msg->angular_velocity.x;
-    new_imu_msg.angular_velocity.z = -imu_msg->angular_velocity.z;
+    new_imu_msg.angular_velocity.y = -imu_msg->angular_velocity.x;
+    new_imu_msg.angular_velocity.z = imu_msg->angular_velocity.z;
 
     new_imu_msg.linear_acceleration.x = imu_msg->linear_acceleration.y;
-    new_imu_msg.linear_acceleration.y = imu_msg->linear_acceleration.x;
-    new_imu_msg.linear_acceleration.z = -imu_msg->linear_acceleration.z;
+    new_imu_msg.linear_acceleration.y = -imu_msg->linear_acceleration.x;
+    new_imu_msg.linear_acceleration.z = imu_msg->linear_acceleration.z;
 
+    ///*****If the flags are true false, this is already done in the IMU driver
     // put into ENU - swap X/Y, invert Z
-    new_imu_msg.orientation.x = imu_msg->orientation.y;
-    new_imu_msg.orientation.y = imu_msg->orientation.x;
-    new_imu_msg.orientation.z = -imu_msg->orientation.z;
-    new_imu_msg.orientation.w = imu_msg->orientation.w;
+    // new_imu_msg.orientation.x = imu_msg->orientation.y;
+    // new_imu_msg.orientation.y = imu_msg->orientation.x;
+    // new_imu_msg.orientation.z = -imu_msg->orientation.z;
+    // new_imu_msg.orientation.w = imu_msg->orientation.w;
+
+    //we just copy the same thing that the driver gives
+    new_imu_msg.orientation = imu_msg->orientation;
+    
+
+    // tf2::Quaternion q_rotate;
+    // q_rotate.setRPY(0.0, 0.0, M_PI / 2);
+    // tf2_quat = q_rotate * tf2_quat;
+    // tf2_quat.normalize();
+    // geometry_msgs::Quaternion quat_msg;
+    // tf2::convert(tf2_quat, quat_msg);
+    // // quat_msg = tf2::toMsg(tf2_quat);
+    // new_imu_msg.orientation = quat_msg;
+    // tf::Quaternion raw_orientation, conv_orientation;
+    // tf::quaternionMsgToTF(imu_msg->orientation, raw_orientation);
 
     
 

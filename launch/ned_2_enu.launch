@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+
+  <node name="ned2enu_node" pkg="ned_enu_tf" type="ned2enu" output="screen"/>
+ 
+</launch>
